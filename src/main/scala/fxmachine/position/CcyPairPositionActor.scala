@@ -1,11 +1,11 @@
 package fxmachine.position
 
 import akka.actor.{Actor, ActorRef}
-import fxmachine.domain.{ExecutionReport, Side}
+import fxmachine.domain.{CcyPair, ExecutionReport, Side}
 import fxmachine.hedge.{HedgeMessage, HedgerActor}
 import org.slf4j.LoggerFactory
 
-class CcyPairPositionActor extends Actor {
+class CcyPairPositionActor() extends Actor {
 
   private val logger = LoggerFactory.getLogger(CcyPairPositionActor.this.getClass)
 

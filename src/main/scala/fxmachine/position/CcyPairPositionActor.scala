@@ -22,7 +22,7 @@ class CcyPairPositionActor() extends Actor {
   }
 
   private def applyPosition(msg: ExecutionReport, newAmount: Double): Unit = {
-    logger.info(s"position time: ${(System.nanoTime() - msg.timestamp) / 1000}")
+    logger.info(s"position time: ${(System.nanoTime() - msg.timestamp) / 1000}, newAmount: $newAmount, ccyPair: ${msg.ccyPair}")
 
     hedger ! HedgeMessage(msg.timestamp, msg.ccyPair, newAmount)
 

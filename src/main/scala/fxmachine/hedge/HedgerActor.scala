@@ -4,6 +4,7 @@ import java.lang.System._
 import java.util.Random
 
 import akka.actor.{Actor, Props}
+import fxmachine.domain.Side.Side
 import fxmachine.domain.{CcyPair, ExecutionReport, Side}
 import fxmachine.position.PositionMessage
 import org.slf4j.LoggerFactory
@@ -11,22 +12,28 @@ import org.slf4j.LoggerFactory
 class HedgerActor(randomHedgeLimit: Long) extends Actor {
 
   private val logger = LoggerFactory.getLogger(HedgerActor.this.getClass)
-  private val simulator = context.actorSelection("//Main/user/app")
+  private val positionSupervisor = context.actorSelection("//Main/user/app/positionSupervisor")
 
   override def preStart(): Unit = {
-    logger.info(s"Random is: $randomHedgeLimit")
+
   }
 
   override def receive = {
     case msg: HedgeMessage =>
       if (msg.amount > randomHedgeLimit) sell(msg)
-      else if (msg.amount < (randomHedgeLimit * -1)) logger.info(s"Buy ${msg.ccyPair} ${msg.amount}")
+      else if (msg.amount < (randomHedgeLimit * -1)) buy(msg)
       else logger.info(s"Nothing to hedge ${msg.ccyPair} ${msg.amount}")
   }
 
-  def sell(msg: HedgeMessage): Unit = {
-    logger.info(s"Sell ${msg.ccyPair} ${msg.amount}")
-    simulator ! PositionMessage(ExecutionReport(nanoTime(), msg.ccyPair, Side.BID, msg.ccyPair.term, 1.55, msg.amount))
+  private def sell(msg: HedgeMessage) = buySell(msg, "Sell", Side.BID)
+
+  private def buy(msg: HedgeMessage) = buySell(msg, "Buy", Side.ASK)
+
+  private def buySell(msg: HedgeMessage, buySell: String, side: Side) = {
+    logger.info(s"Random is: $randomHedgeLimit")
+    logger.info(s"$buySell ${msg.ccyPair} ${msg.amount}")
+    Thread.sleep(20)
+    positionSupervisor ! PositionMessage(ExecutionReport(nanoTime(), msg.ccyPair, side, msg.ccyPair.term, 1.55, Math.abs(msg.amount)))
   }
 }
 

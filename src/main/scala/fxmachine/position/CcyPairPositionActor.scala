@@ -16,8 +16,8 @@ class CcyPairPositionActor() extends Actor {
   private def position(amount: Double): Receive = {
     case PositionMessage(msg: ExecutionReport) =>
       msg match {
-        case ExecutionReport(_, _, Side.ASK, _, _, amt) => applyPosition(msg, amount + amt)
-        case ExecutionReport(_, _, Side.BID, _, _, amt) => applyPosition(msg, amount - amt)
+        case ExecutionReport(_, _, Side.ASK, _, _, amt) => applyPosition(msg, amount - amt)
+        case ExecutionReport(_, _, Side.BID, _, _, amt) => applyPosition(msg, amount + amt)
       }
   }
 

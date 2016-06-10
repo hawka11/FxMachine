@@ -25,9 +25,9 @@ class HedgerActor(randomHedgeLimit: Long) extends Actor {
       else logger.info(s"Nothing to hedge ${msg.ccyPair} ${msg.amount}")
   }
 
-  private def sell(msg: HedgeMessage) = buySell(msg, "Sell", Side.BID)
+  private def sell(msg: HedgeMessage) = buySell(msg, "Sell", Side.ASK)
 
-  private def buy(msg: HedgeMessage) = buySell(msg, "Buy", Side.ASK)
+  private def buy(msg: HedgeMessage) = buySell(msg, "Buy", Side.BID)
 
   private def buySell(msg: HedgeMessage, buySell: String, side: Side) = {
     logger.info(s"Random is: $randomHedgeLimit")
